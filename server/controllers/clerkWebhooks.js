@@ -5,6 +5,10 @@ import User from "../models/User.js";
 // POST /api/clerk
 const clerkWebhooks = async (req, res) => {
   try {
+    // Debug: log all headers and body for troubleshooting webhook delivery
+    console.log("--- Clerk Webhook Received ---");
+    console.log("Headers:", JSON.stringify(req.headers, null, 2));
+    console.log("Body:", JSON.stringify(req.body, null, 2));
     // Create a Svix instance with clerk webhook secret.
     const whook = new Webhook(process.env.CLERK_WEBHOOK_SECRET);
 
@@ -15,17 +19,27 @@ const clerkWebhooks = async (req, res) => {
       "svix-signature": req.headers["svix-signature"],
     };
 
-    // Verifying Headers
-    await whook.verify(JSON.stringify(req.body), headers);
+    // Prepare raw payload string for svix verification
+    const payload =
+      req.body instanceof Buffer
+        ? req.body.toString()
+        : JSON.stringify(req.body);
 
-    // Getting Data from request body
-    const { data, type } = req.body;
+    // Verifying Headers using raw payload
+    await whook.verify(payload, headers);
+
+    // Getting Data from parsed payload
+    const { data, type } = JSON.parse(payload);
 
     const userData = {
       _id: data.id,
-      email: data.email_addresses[0].email_address,
-      username: data.first_name + " " + data.last_name,
-      image: data.image_url,
+      email: data.email_addresses?.[0]?.email_address || "",
+      username:
+        `${data.first_name || ""} ${data.last_name || ""}`.trim() ||
+        data.username ||
+        "",
+      image: data.image_url || "",
+      recentSearchedCities: [],
     };
 
     // Switch Cases for differernt Events
@@ -51,8 +65,13 @@ const clerkWebhooks = async (req, res) => {
 
     res.json({ success: true, message: "Webhook Recieved" });
   } catch (error) {
-    console.log(error.message);
-    res.json({ success: false, message: error.message });
+    console.error("Error handling Clerk webhook:", error);
+    res
+      .status(400)
+      .json({
+        success: false,
+        message: error?.message || "Webhook processing error",
+      });
   }
 };
 
