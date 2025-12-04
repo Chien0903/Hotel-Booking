@@ -3,6 +3,7 @@ import { assets, roomCommonData } from '../assets/assets'
 import { useAppContext } from '../context/AppContext';
 import { useParams } from 'react-router-dom';
 import StarRating from '../components/StarRating';
+import ReviewsList from '../components/ReviewsList';
 import toast from 'react-hot-toast';
 
 const RoomDetails = () => {
@@ -173,6 +174,9 @@ const RoomDetails = () => {
                     Contact Now
                 </button>
             </div>
+
+            {/* Reviews Section */}
+            <ReviewsList roomId={id} />
         </div>
     )
 }

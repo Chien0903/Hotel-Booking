@@ -3,11 +3,13 @@ import Title from '../components/Title'
 import { assets } from '../assets/assets'
 import { useAppContext } from '../context/AppContext'
 import toast from 'react-hot-toast'
+import ReviewForm from '../components/ReviewForm'
 
 const MyBookings = () => {
 
     const { axios, getToken, user } = useAppContext();
     const [bookings, setBookings] = useState([]);
+    const [selectedBookingForReview, setSelectedBookingForReview] = useState(null);
 
 
     const fetchUserBookings = async () => {
@@ -36,6 +38,12 @@ const MyBookings = () => {
             toast.error(error.message)
         }
     }
+
+    const isBookingEligibleForReview = (booking) => {
+        const checkoutDate = new Date(booking.checkOutDate);
+        const now = new Date();
+        return checkoutDate <= now && booking.status !== 'cancelled';
+    };
 
     useEffect(() => {
         if (user) {
@@ -97,10 +105,26 @@ const MyBookings = () => {
                                     Pay Now
                                 </button>
                             )}
+                            {isBookingEligibleForReview(booking) && (
+                                <button 
+                                    onClick={() => setSelectedBookingForReview(booking)}
+                                    className="px-4 py-1.5 mt-4 text-xs bg-orange-500 text-white rounded-full hover:bg-orange-600 transition-all cursor-pointer"
+                                >
+                                    Write Review
+                                </button>
+                            )}
                         </div>
                     </div>
                 ))}
             </div>
+
+            {selectedBookingForReview && (
+                <ReviewForm 
+                    booking={selectedBookingForReview}
+                    onReviewSubmitted={fetchUserBookings}
+                    onClose={() => setSelectedBookingForReview(null)}
+                />
+            )}
         </div>
     )
 }

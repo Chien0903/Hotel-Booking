@@ -5,7 +5,24 @@ import { toast } from 'react-hot-toast'
 import { useNavigate } from "react-router-dom";
 import { assets } from "../assets/assets";
 
-axios.defaults.baseURL = import.meta.env.VITE_BACKEND_URL;
+// Auto-detect backend URL based on environment
+const getBackendURL = () => {
+  const envURL = import.meta.env.VITE_BACKEND_URL;
+  
+  // If explicitly set in .env, use it
+  if (envURL) {
+    return envURL;
+  }
+  
+  // Auto-detect: use HTTP for localhost, HTTPS for production
+  const isLocalhost = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+  const protocol = isLocalhost ? 'http' : 'https';
+  const port = isLocalhost ? ':3000' : '';
+  
+  return `${protocol}://${window.location.hostname}${port}`;
+};
+
+axios.defaults.baseURL = getBackendURL();
 
 const AppContext = createContext();
 
