@@ -44,29 +44,29 @@ const Navbar = () => {
     }, [location.pathname]);
 
     return (
-        <nav className={`fixed top-0 left-0 w-full flex items-center justify-between px-4 md:px-16 lg:px-24 xl:px-32 transition-all duration-500 z-50 ${isScrolled ? "bg-white/80 shadow-md text-gray-700 backdrop-blur-lg py-3 md:py-4" : "py-4 md:py-6"}`}>
+        <nav className={`fixed top-0 left-0 w-full flex items-center justify-between px-3 sm:px-4 md:px-16 lg:px-24 xl:px-32 transition-all duration-500 z-50 ${isScrolled ? "bg-white/80 shadow-md text-gray-700 backdrop-blur-lg py-2 sm:py-3 md:py-4" : "py-3 sm:py-4 md:py-6"}`}>
             <Link to="/">
-                <img src={assets.logo} alt="logo" className={`h-9 ${isScrolled && "invert opacity-80"}`} />
+                <img src={assets.logo} alt="logo" className={`h-7 sm:h-8 md:h-9 ${isScrolled && "invert opacity-80"}`} />
             </Link>
 
             <div className="hidden md:flex items-center gap-4 lg:gap-8">
                 {navLinks.map((navLink, index) => (
-                    <NavLink key={index} to={navLink.path} className={`group flex flex-col gap-0.5 ${isScrolled ? "text-gray-700" : "text-white"}`} onClick={() => scrollTo(0, 0)}>
+                    <NavLink key={index} to={navLink.path} className={`group flex flex-col gap-0.5 text-sm lg:text-base ${isScrolled ? "text-gray-700" : "text-white"}`} onClick={() => scrollTo(0, 0)}>
                         {navLink.name}
                         <div className={`${isScrolled ? "bg-gray-700" : "bg-white"} h-0.5 w-0 group-hover:w-full transition-all duration-300`} ></div>
                     </NavLink>
                 ))}
                 {
                     user && (
-                        <button className={`border px-4 py-1 text-sm font-light rounded-full cursor-pointer ${isScrolled ? 'text-black' : 'text-white'} transition-all`} onClick={() => isOwner ? navigate('/owner') : setShowHotelReg(true)}>
+                        <button className={`border px-3 sm:px-4 py-1 text-xs sm:text-sm font-light rounded-full cursor-pointer ${isScrolled ? 'text-black' : 'text-white'} transition-all`} onClick={() => isOwner ? navigate('/owner') : setShowHotelReg(true)}>
                             {isOwner ? 'Dashboard' : 'List Your Hotel'}
                         </button>
                     )
                 }
             </div>
 
-            <div className="hidden md:flex items-center gap-4">
-                <img src={assets.searchIcon} alt="search" className={`${isScrolled && "invert"} h-7 transition-all duration-500`} />
+            <div className="hidden md:flex items-center gap-3 md:gap-4">
+                <img src={assets.searchIcon} alt="search" className={`${isScrolled && "invert"} h-6 md:h-7 transition-all duration-500`} />
                 {user ? (
                     <UserButton >
                         <UserButton.MenuItems>
@@ -74,42 +74,42 @@ const Navbar = () => {
                         </UserButton.MenuItems>
                     </UserButton>
                 ) : (
-                    <button onClick={openSignIn} className="bg-black text-white px-8 py-2.5 rounded-full ml-4 transition-all duration-500 cursor-pointer">
+                    <button onClick={openSignIn} className="bg-black text-white px-6 md:px-8 py-2 md:py-2.5 rounded-full ml-2 md:ml-4 transition-all duration-500 cursor-pointer text-xs sm:text-sm">
                         Login
                     </button>
                 )}
             </div>
 
             {/* Mobile Menu */}
-            <div className="flex items-center gap-3 md:hidden">
+            <div className="flex items-center gap-2 sm:gap-3 md:hidden">
                 <UserButton />
                 <img onClick={() => setIsMenuOpen(!isMenuOpen)} src={assets.menuIcon} alt="" className={`${isScrolled && "invert"} h-4`} />
             </div>
 
-            <div className={`fixed top-0 left-0 w-full h-screen bg-white text-base flex flex-col md:hidden items-center justify-center gap-6 font-medium text-gray-800 transition-all duration-500 ${isMenuOpen ? "translate-x-0" : "-translate-x-full"}`}>
-                <button className="absolute top-4 right-4" onClick={() => setIsMenuOpen(false)} >
-                    <img src={assets.closeMenu} alt="close-menu" className="h-6.5" />
+            <div className={`fixed top-0 left-0 w-full h-screen bg-white text-base flex flex-col md:hidden items-center justify-center gap-4 sm:gap-6 font-medium text-gray-800 transition-all duration-500 ${isMenuOpen ? "translate-x-0" : "-translate-x-full"}`}>
+                <button className="absolute top-3 sm:top-4 right-3 sm:right-4" onClick={() => setIsMenuOpen(false)} >
+                    <img src={assets.closeMenu} alt="close-menu" className="h-5 sm:h-6.5" />
                 </button>
 
                 {navLinks.map((navLink) => (
-                    <NavLink key={navLink.name} to={navLink.path} onClick={() => setIsMenuOpen(false)}>
+                    <NavLink key={navLink.name} to={navLink.path} onClick={() => setIsMenuOpen(false)} className="text-sm sm:text-base">
                         {navLink.name}
                     </NavLink>
                 ))}
 
                 {user && (
                     <>
-                        <NavLink to="/my-bookings" onClick={() => setIsMenuOpen(false)}>
+                        <NavLink to="/my-bookings" onClick={() => setIsMenuOpen(false)} className="text-sm sm:text-base">
                             My Bookings
                         </NavLink>
-                        <button className="border px-4 py-1 text-sm font-light rounded-full cursor-pointer transition-all" onClick={() => isOwner ? navigate('/owner') : setShowHotelReg(true)}>
+                        <button className="border px-3 sm:px-4 py-1 text-xs sm:text-sm font-light rounded-full cursor-pointer transition-all" onClick={() => isOwner ? navigate('/owner') : setShowHotelReg(true)}>
                             {isOwner ? 'Dashboard' : 'List Your Hotel'}
                         </button>
                     </>
                 )}
 
                 {!user && (
-                    <button onClick={openSignIn} className="bg-black text-white px-8 py-2.5 rounded-full ml-4 transition-all duration-500" >
+                    <button onClick={openSignIn} className="bg-black text-white px-6 sm:px-8 py-2 sm:py-2.5 rounded-full ml-0 sm:ml-4 transition-all duration-500 text-xs sm:text-sm" >
                         Login
                     </button>
                 )}

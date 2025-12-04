@@ -166,7 +166,7 @@ export const deleteReview = async (req, res) => {
 
 		// if user is author
 		if (String(review.user) === String(req.user._id)) {
-			await review.remove();
+			await Review.deleteOne({ _id: reviewId });
 			return res.json({ success: true, message: "Review deleted" });
 		}
 
@@ -174,7 +174,7 @@ export const deleteReview = async (req, res) => {
 		if (review.hotel) {
 			const hotel = await Hotel.findById(review.hotel);
 			if (hotel && String(hotel.owner) === String(req.user._id)) {
-				await review.remove();
+				await Review.deleteOne({ _id: reviewId });
 				return res.json({ success: true, message: "Review deleted by hotel owner" });
 			}
 		}
