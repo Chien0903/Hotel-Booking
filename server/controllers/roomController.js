@@ -80,3 +80,23 @@ export const toggleRoomAvailability = async (req, res) => {
     res.json({ success: false, message: error.message });
   }
 };
+
+// API to get rooms by hotel ID
+// GET /api/rooms/hotel/:hotelId
+export const getRoomsByHotel = async (req, res) => {
+  try {
+    const { hotelId } = req.params;
+    const rooms = await Room.find({ hotel: hotelId, isAvailable: true })
+      .populate({
+        path: 'hotel',
+        populate: {
+          path: 'owner',
+          select: 'image',
+        },
+      })
+      .sort({ createdAt: -1 });
+    res.json({ success: true, rooms });
+  } catch (error) {
+    res.json({ success: false, message: error.message });
+  }
+};

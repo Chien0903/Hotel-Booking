@@ -13,6 +13,7 @@ import AllRooms from './pages/AllRooms'
 import RoomDetails from './pages/RoomDetails'
 import Footer from './components/Footer'
 import MyBookings from './pages/MyBookings'
+import MyHotels from './pages/MyHotels'
 import Loader from './components/Loader'
 
 const App = () => {
@@ -30,7 +31,8 @@ const App = () => {
       <div className='min-h-[70vh]'>
       <Routes>
         <Route path='/' element={<Home />} />
-        <Route path='/rooms' element={<AllRooms />} />
+        <Route path='/rooms' element={<MyHotels />} />
+        <Route path='/rooms/hotel/:hotelId' element={<AllRooms />} />
         <Route path='/rooms/:id' element={<RoomDetails />} />
         <Route path='my-bookings' element={<MyBookings />} />
         < Route path="/loader/:nextUrl" element={<Loader />} />

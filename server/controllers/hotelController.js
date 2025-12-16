@@ -30,3 +30,45 @@ export const registerHotel = async (req, res) => {
     res.json({ success: false, message: error.message });
   }
 };
+
+// API to get hotels owned by the authenticated user
+// GET /api/hotels/owner
+export const getUserHotels = async (req, res) => {
+  try {
+    console.log("getUserHotels called");
+    console.log("req.auth:", req.auth);
+    const owner = req.auth?.userId;
+
+    if (!owner) {
+      console.log("No owner found in req.auth");
+      return res
+        .status(401)
+        .json({ success: false, message: "User not authenticated" });
+    }
+
+    console.log("Finding hotels for owner:", owner);
+    const hotels = await Hotel.find({ owner }).sort({ createdAt: -1 });
+    console.log("Found hotels:", hotels.length);
+    res.json({ success: true, hotels: hotels || [] });
+  } catch (error) {
+    console.error("Error in getUserHotels:", error);
+    res.status(500).json({ success: false, message: error.message });
+  }
+};
+
+// API to get a hotel by ID
+// GET /api/hotels/:hotelId
+export const getHotelById = async (req, res) => {
+  try {
+    const { hotelId } = req.params;
+    const hotel = await Hotel.findById(hotelId);
+
+    if (!hotel) {
+      return res.json({ success: false, message: "Hotel not found" });
+    }
+
+    res.json({ success: true, hotel });
+  } catch (error) {
+    res.json({ success: false, message: error.message });
+  }
+};
