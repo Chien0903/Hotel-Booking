@@ -12,22 +12,32 @@ export const registerHotel = async (req, res) => {
       return res.json({ success: false, message: "User not authenticated" });
     }
 
-    // Check if User Already Registered
-    const hotel = await Hotel.findOne({ owner });
-    if (hotel) {
-      return res.json({ success: false, message: "Hotel Already Registered" });
-    }
-
+    // Allow users to register multiple hotels
     await Hotel.create({ name, address, contact, city, owner });
 
-    // Update User Role
+    // Update User Role to hotelOwner if not already
     if (req.user) {
-      await User.findByIdAndUpdate(owner, { role: "hotelOwner" });
+      const user = await User.findById(owner);
+      if (user && user.role !== "hotelOwner") {
+        await User.findByIdAndUpdate(owner, { role: "hotelOwner" });
+      }
     }
 
     res.json({ success: true, message: "Hotel Registered Successfully" });
   } catch (error) {
     res.json({ success: false, message: error.message });
+  }
+};
+
+// API to get all hotels
+// GET /api/hotels
+export const getAllHotels = async (req, res) => {
+  try {
+    const hotels = await Hotel.find().sort({ createdAt: -1 });
+    res.json({ success: true, hotels: hotels || [] });
+  } catch (error) {
+    console.error("Error in getAllHotels:", error);
+    res.status(500).json({ success: false, message: error.message });
   }
 };
 

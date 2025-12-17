@@ -4,6 +4,7 @@ import {
   registerHotel,
   getUserHotels,
   getHotelById,
+  getAllHotels,
 } from "../controllers/hotelController.js";
 
 const hotelRouter = express.Router();
@@ -15,7 +16,8 @@ hotelRouter.get("/test", (req, res) => {
 
 hotelRouter.post("/", protect, registerHotel);
 // Important: Put specific routes before dynamic routes
-hotelRouter.get("/owner", protect, getUserHotels);
+hotelRouter.get("/", getAllHotels); // Get all hotels (public)
+hotelRouter.get("/owner", protect, getUserHotels); // Get user's hotels (protected)
 hotelRouter.get("/:hotelId", getHotelById);
 
 export default hotelRouter;
